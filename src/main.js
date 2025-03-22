@@ -68,7 +68,7 @@ function onEachFeature(feature, layer) {
           // Inside your click event
           fetchWDcountryCentroids()
             .then(data => {
-              countryCentroids = convertWDjsonToGeoJSON(data);
+              countryCentroids = wdJSONtoGeoJSON(data);
               // add it to deck.gl here with a function
               console.log("Country Centroids:", countryCentroids);
             });
