@@ -1,4 +1,4 @@
-async function fetchWDcountryCentroids() {
+export async function fetchWDcountryCentroids() {
     const query = `
     SELECT ?country ?countryLabel ?iso3166_3 ?coord WHERE {
       ?country wdt:P31 wd:Q3624078;  # Sovereign state

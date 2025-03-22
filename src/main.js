@@ -5,6 +5,11 @@ import { ScatterplotLayer } from '@deck.gl/layers';
 import { Deck } from '@deck.gl/core';
 import 'deck.gl-leaflet'; // extends L with L.DeckGL
 
+import { fetchWDcountryCentroids } from './wdGetCountryCentroid.js';
+import { wdJSONtoGeoJSON } from './convertWDjsonToGeoJSON.js';
+
+
+
 const defaultStyle = {
   fillColor: "#cbc9e2", 
   color: "#9e9ac8",       // Border color
