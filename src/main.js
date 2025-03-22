@@ -5,8 +5,10 @@ import { ScatterplotLayer } from '@deck.gl/layers';
 import { Deck } from '@deck.gl/core';
 import 'deck.gl-leaflet'; // extends L with L.DeckGL
 
+
 import { fetchWDcountryCentroids } from './wdGetCountryCentroid.js';
 import { wdJSONtoGeoJSON } from './convertWDjsonToGeoJSON.js';
+
 
 
 
