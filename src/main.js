@@ -34,7 +34,7 @@ zoomOffset: -1,
 }).addTo(map);
 
 // Fetch and add GeoJSON data
-fetch("data/WorldPoly.geojson")
+fetch("./data/WorldPoly.geojson")
 .then(response => response.json())
 .then(data => {
     L.geoJson(data, {
