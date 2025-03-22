@@ -58,6 +58,10 @@ function onEachFeature(feature, layer) {
           const iso3 = clickedFeature.properties.adm0_a3_us;
           console.log("Selected Country ISO3:", iso3);
           e.target.setStyle(selectedStyle); // Apply selected style
+          wdJSONtoGeoJSON().then(data => {
+            const countryCentroids = convertWDjsonToGeoJSON(data);}
+          );
+          console.log("Country Centroids:", countryCentroids);ß
           // updateStartingPoint(iso3); // Update starting point
       }
   });
