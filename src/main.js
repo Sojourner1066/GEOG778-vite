@@ -54,9 +54,10 @@ function onEachFeature(feature, layer) {
           e.target.setStyle(defaultStyle); // Reset to default style
       },
       click: function (e) {
-          e.target.setStyle(selectedStyle); // Apply selected style on click
-          iso3 = feature.properties.adm0_a3_us;
+          const clickedFeature = e.target.feature; // <- Safely get the feature from the layer
+          const iso3 = clickedFeature.properties.adm0_a3_us;
           console.log("Selected Country ISO3:", iso3);
+          e.target.setStyle(selectedStyle); // Apply selected style
           // updateStartingPoint(iso3); // Update starting point
       }
   });
