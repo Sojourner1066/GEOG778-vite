@@ -34,7 +34,7 @@ zoomOffset: -1,
 }).addTo(map);
 
 // Fetch and add GeoJSON data
-fetch("/WorldPoly.geojson")
+fetch("/GEOG778-vite/WorldPoly.geojson")
 .then(response => response.json())
 .then(data => {
     L.geoJson(data, {
