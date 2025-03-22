@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build Vite Project",
+        "type": "shell",
+        "command": "npm run build",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Deploy to GitHub Pages",
+        "type": "shell",
+        "command": "npm run deploy",
+        "dependsOn": ["Build Vite Project"],
+        "group": "none",
+        "problemMatcher": []
+      }
+    ]
+  }
