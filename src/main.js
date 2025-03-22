@@ -58,11 +58,15 @@ function onEachFeature(feature, layer) {
           const iso3 = clickedFeature.properties.adm0_a3_us;
           console.log("Selected Country ISO3:", iso3);
           e.target.setStyle(selectedStyle); // Apply selected style
-          wdJSONtoGeoJSON().then(data => {
-            const countryCentroids = convertWDjsonToGeoJSON(data);}
-          );
-          console.log("Country Centroids:", countryCentroids);ß
-          // updateStartingPoint(iso3); // Update starting point
+          let countryCentroids = null; // used to store the country centroids in this function
+
+          // Inside your click event
+          fetchWDcountryCentroids()
+            .then(data => {
+              countryCentroids = convertWDjsonToGeoJSON(data);
+              // add it to deck.gl here with a function
+              console.log("Country Centroids:", countryCentroids);
+            });
       }
   });
 }
