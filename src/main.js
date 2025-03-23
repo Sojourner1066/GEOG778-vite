@@ -97,7 +97,7 @@ function onEachFeature(feature, layer) {
         const randomCountries = getRandomISO3Codes();
         console.log("Random ISO3 codes:", randomCountries);
         
-        updateDeckLayer(map, countryCentroids, randomCountries, iso3)
+        // updateDeckLayer(map, countryCentroids, randomCountries, iso3)
         
         
       }
