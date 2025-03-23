@@ -17,7 +17,7 @@ export function updateDeckLayer(map, countryCentroids, selectedCountries, select
             new MapView({ repeat: true })
         ],
         layers: [
-            new deck.ArcLayer({
+            new ArcLayer({
                 id: 'arcs',
                 data: countryCentroids,
                 dataTransform: d => {
