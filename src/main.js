@@ -1,18 +1,14 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import 'deck.gl-leaflet'; // extends L with L.DeckGL
 import { ArcLayer } from '@deck.gl/layers';
 import { Deck, MapView } from '@deck.gl/core';
-
 
 import { fetchWDcountryCentroids } from './wdGetCountryCentroid.js';
 import { wdJSONtoGeoJSON } from './convertWDjsonToGeoJSON.js';
 import { filterGeoJSONByISO3 } from './filterCentroidsByISO.js';
 import { getRandomISO3Codes } from './testLinkedCountry.js';
 import { updateDeckLayer } from './updateDeckLayers.js';
-
-
 
 const defaultStyle = {
   fillColor: "#cbc9e2", 
@@ -36,31 +32,43 @@ const selectedStyle = {
 // Initialize the map
 let map = L.map('map').setView([2.5, 20.0], 3);
 
-// import mapbox token
+// Import Mapbox token
 const mapboxToken =
   import.meta.env.VITE_MAPBOX_TOKEN || window?.config?.MAPBOX_TOKEN;
 
 L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=${mapboxToken}`, {
-attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-tileSize: 512,
-zoomOffset: -1,
+  attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  tileSize: 512,
+  zoomOffset: -1,
 }).addTo(map);
 
-// Add Deck.gl overlay to Leaflet map
-const deckOverlay = new Deck({
-  parent: map.getPanes().overlayPane, // Attach Deck.gl to Leaflet overlay
+// Create a custom canvas for deck.gl
+const deckCanvas = document.createElement('canvas');
+deckCanvas.id = 'deck-canvas';
+deckCanvas.style.position = 'absolute';
+deckCanvas.style.top = '0';
+deckCanvas.style.left = '0';
+deckCanvas.style.width = '100%';
+deckCanvas.style.height = '100%';
+map.getContainer().appendChild(deckCanvas);
+
+// Initialize the Deck instance
+const deck = new Deck({
+  canvas: 'deck-canvas',
   views: [new MapView({ repeat: true })],
-  controller: false, // Let Leaflet handle interaction
-  layers: []
+  layers: [], // Start with an empty array of layers
+  initialViewState: {
+    longitude: 20.0,
+    latitude: 2.5,
+    zoom: 3
+  },
+  controller: true
 });
 
-// tag the overlay as a deck layer so it can be removed later
-deckOverlay._isDeckLayer = true;
+// Global cache for centroids
+let countryCentroids = null;
 
-
-let countryCentroids = null; // Global cache for centroids
-
-// Fetch once on load
+// Fetch centroids once on load
 fetchWDcountryCentroids()
   .then(data => {
     countryCentroids = wdJSONtoGeoJSON(data);
@@ -70,57 +78,39 @@ fetchWDcountryCentroids()
 
 // Fetch and add GeoJSON data
 fetch("/GEOG778-vite/WorldPoly.geojson")
-.then(response => response.json())
-.then(data => {
+  .then(response => response.json())
+  .then(data => {
     L.geoJson(data, {
       style: defaultStyle, // Set default style
       onEachFeature: onEachFeature // Attach event listeners 
     }).addTo(map);
-})
-.catch(error => console.error("Error loading GeoJSON:", error));
+  })
+  .catch(error => console.error("Error loading GeoJSON:", error));
 
 // Event functions to apply and remove styles
 function onEachFeature(feature, layer) {
   layer.on({
-      mouseover: function (e) {
-          e.target.setStyle(hoverStyle); // Apply hover style
-      },
-      mouseout: function (e) {
-          e.target.setStyle(defaultStyle); // Reset to default style
-      },
-      click: function (e) {
-        // Get the iso 3 code from the clicked country
-        const clickedFeature = e.target.feature; // <- Safely get the feature from the layer
-        const iso3 = clickedFeature.properties.adm0_a3_us;
-        console.log("Selected Country ISO3:", iso3);
-        
-        // get centroid coordinates of the clicked country
-        // const startingPoint = getCoordinatesByISO3(countryCentroids, iso3);
+    mouseover: function (e) {
+      e.target.setStyle(hoverStyle); // Apply hover style
+    },
+    mouseout: function (e) {
+      e.target.setStyle(defaultStyle); // Reset to default style
+    },
+    click: function (e) {
+      // Get the ISO3 code from the clicked country
+      const clickedFeature = e.target.feature; // <- Safely get the feature from the layer
+      const iso3 = clickedFeature.properties.adm0_a3_us;
+      console.log("Selected Country ISO3:", iso3);
 
+      // Apply selected style
+      e.target.setStyle(selectedStyle); // Apply selected style 
 
-        // Apply selected style
-        e.target.setStyle(selectedStyle); // Apply selected style 
+      // Get an array of random countries for testing
+      const randomCountries = getRandomISO3Codes();
+      console.log("Random ISO3 codes:", randomCountries);
 
-        // Filter centroids by ISO3 to get the centroid of the clicked country
-        // const primaryCountry = filterGeoJSONByISO3(countryCentroids, iso3);
-        // console.log("Primary Country:", primaryCountry);
-
-        // Get a array of random countries for testing
-        const randomCountries = getRandomISO3Codes();
-        console.log("Random ISO3 codes:", randomCountries);
-        
-        updateDeckLayer(map, countryCentroids, randomCountries, iso3)
-      }
+      // Update the deck.gl layer
+      updateDeckLayer(deck, countryCentroids, randomCountries, iso3);
+    }
   });
 }
-
-// // Initialize the deck.gl layer with an empty array
-// const deckLayer = new L.DeckGL({
-//   views: [
-//     new MapView({
-//       repeat: true
-//     })
-//   ],
-//   layers: [], // Start with an empty array of layers
-// });
-// map.addLayer(deckLayer);
