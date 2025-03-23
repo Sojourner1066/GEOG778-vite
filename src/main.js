@@ -98,16 +98,14 @@ function onEachFeature(feature, layer) {
         e.target.setStyle(selectedStyle); // Apply selected style 
 
         // Filter centroids by ISO3 to get the centroid of the clicked country
-        const primaryCountry = filterGeoJSONByISO3(countryCentroids, iso3);
-        console.log("Primary Country:", primaryCountry);
+        // const primaryCountry = filterGeoJSONByISO3(countryCentroids, iso3);
+        // console.log("Primary Country:", primaryCountry);
 
         // Get a array of random countries for testing
         const randomCountries = getRandomISO3Codes();
         console.log("Random ISO3 codes:", randomCountries);
         
         // updateDeckLayer(map, countryCentroids, randomCountries, iso3)
-        
-        
       }
   });
 }
