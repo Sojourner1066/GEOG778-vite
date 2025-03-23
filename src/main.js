@@ -1,10 +1,10 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import { ScatterplotLayer } from '@deck.gl/layers';
-import { Deck, MapView } from '@deck.gl/core';
 import 'deck.gl-leaflet'; // extends L with L.DeckGL
-console.log(L);
+import { ArcLayer } from '@deck.gl/layers';
+import { Deck, MapView } from '@deck.gl/core';
+
 
 import { fetchWDcountryCentroids } from './wdGetCountryCentroid.js';
 import { wdJSONtoGeoJSON } from './convertWDjsonToGeoJSON.js';
@@ -45,6 +45,14 @@ attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a h
 tileSize: 512,
 zoomOffset: -1,
 }).addTo(map);
+
+// Add Deck.gl overlay to Leaflet map
+const deckOverlay = new Deck({
+  parent: map.getPanes().overlayPane, // Attach Deck.gl to Leaflet overlay
+  views: [new MapView({ repeat: true })],
+  controller: false, // Let Leaflet handle interaction
+  layers: []
+});
 
 
 let countryCentroids = null; // Global cache for centroids
@@ -104,13 +112,13 @@ function onEachFeature(feature, layer) {
   });
 }
 
-// Initialize the deck.gl layer with an empty array
-const deckLayer = new L.DeckGL({
-  views: [
-    new MapView({
-      repeat: true
-    })
-  ],
-  layers: [], // Start with an empty array of layers
-});
-map.addLayer(deckLayer);
+// // Initialize the deck.gl layer with an empty array
+// const deckLayer = new L.DeckGL({
+//   views: [
+//     new MapView({
+//       repeat: true
+//     })
+//   ],
+//   layers: [], // Start with an empty array of layers
+// });
+// map.addLayer(deckLayer);

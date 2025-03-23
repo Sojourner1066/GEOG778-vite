@@ -12,9 +12,9 @@ export function updateDeckLayer(map, countryCentroids, selectedCountries, select
     // });
 
     // Create a new deck.gl layer with updated data
-    const deckLayer = new L.DeckGL.Layer({
+    const deckLayer = new L.DeckGL({
         views: [
-            new deck.MapView({ repeat: true })
+            new MapView({ repeat: true })
         ],
         layers: [
             new deck.ArcLayer({
