@@ -8,8 +8,7 @@ import 'deck.gl-leaflet'; // extends L with L.DeckGL
 
 import { fetchWDcountryCentroids } from './wdGetCountryCentroid.js';
 import { wdJSONtoGeoJSON } from './convertWDjsonToGeoJSON.js';
-
-
+import { filterGeoJSONByISO3 } from './filterCentroidsByISO.js';
 
 
 const defaultStyle = {
@@ -40,6 +39,17 @@ tileSize: 512,
 zoomOffset: -1,
 }).addTo(map);
 
+
+let countryCentroids = null; // Global cache for centroids
+
+// Fetch once on load
+fetchWDcountryCentroids()
+  .then(data => {
+    countryCentroids = wdJSONtoGeoJSON(data);
+    console.log("Fetched centroids once:", countryCentroids);
+  })
+  .catch(err => console.error("Error fetching centroids:", err));
+
 // Fetch and add GeoJSON data
 fetch("/GEOG778-vite/WorldPoly.geojson")
 .then(response => response.json())
@@ -64,16 +74,9 @@ function onEachFeature(feature, layer) {
           const clickedFeature = e.target.feature; // <- Safely get the feature from the layer
           const iso3 = clickedFeature.properties.adm0_a3_us;
           console.log("Selected Country ISO3:", iso3);
-          e.target.setStyle(selectedStyle); // Apply selected style
-          let countryCentroids = null; // used to store the country centroids in this function
-
-          // Inside your click event
-          fetchWDcountryCentroids()
-            .then(data => {
-              countryCentroids = wdJSONtoGeoJSON(data);
-              // add it to deck.gl here with a function
-              console.log("Country Centroids:", countryCentroids);
-            });
+          e.target.setStyle(selectedStyle); // Apply selected style 
+          const primaryCountry = filterGeoJSONByISO3(countryCentroids, iso3);
+          console.log("Primary Country:", primaryCountry);       
       }
   });
 }
