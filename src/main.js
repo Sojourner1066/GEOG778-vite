@@ -92,7 +92,8 @@ function onEachFeature(feature, layer) {
         console.log("Selected Country ISO3:", iso3);
         
         // get centroid coordinates of the clicked country
-        const startingPoint = getCoordinatesByISO3(iso3);
+        // const startingPoint = getCoordinatesByISO3(countryCentroids, iso3);
+
 
         // Apply selected style
         e.target.setStyle(selectedStyle); // Apply selected style 
