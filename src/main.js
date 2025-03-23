@@ -105,12 +105,12 @@ function onEachFeature(feature, layer) {
 }
 
 // Initialize the deck.gl layer with an empty array
-const deckLayer = new DeckGlLeaflet.LeafletLayer({
+const deckLayer = new L.DeckGL.Layer({
   views: [
-      new deck.MapView({
+    new deck.MapView({
       repeat: true
-      })
+    })
   ],
-  layers: [],
-  });
+  layers: [], // Start with an empty array of layers
+});
 map.addLayer(deckLayer);

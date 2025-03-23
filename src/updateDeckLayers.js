@@ -7,7 +7,7 @@ export function updateDeckLayer(map, countryCentroids, selectedCountries, select
     });
 
     // Create a new deck.gl layer with updated data
-    const deckLayer = new DeckGlLeaflet.LeafletLayer({
+    const deckLayer = new L.DeckGL.Layer({
         views: [
             new deck.MapView({ repeat: true })
         ],
