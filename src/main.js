@@ -2,7 +2,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import { ScatterplotLayer } from '@deck.gl/layers';
-import { Deck } from '@deck.gl/core';
+import { Deck, MapView } from '@deck.gl/core';
 import 'deck.gl-leaflet'; // extends L with L.DeckGL
 console.log(L);
 
@@ -107,7 +107,7 @@ function onEachFeature(feature, layer) {
 // Initialize the deck.gl layer with an empty array
 const deckLayer = new L.DeckGL({
   views: [
-    new deck.MapView({
+    new MapView({
       repeat: true
     })
   ],
