@@ -1,10 +1,15 @@
 export function updateDeckLayer(map, countryCentroids, selectedCountries, selectedCountryISO3) {
     // Remove existing deck.gl layers
     map.eachLayer(layer => {
-        if (layer instanceof DeckGlLeaflet.LeafletLayer) {
+        if (layer instanceof L.DeckGL.Layer) {
             map.removeLayer(layer);
         }
     });
+    // map.eachLayer(layer => {
+    //     if (layer instanceof DeckGlLeaflet.LeafletLayer) {
+    //         map.removeLayer(layer);
+    //     }
+    // });
 
     // Create a new deck.gl layer with updated data
     const deckLayer = new L.DeckGL.Layer({
