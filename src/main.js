@@ -105,7 +105,7 @@ function onEachFeature(feature, layer) {
 }
 
 // Initialize the deck.gl layer with an empty array
-const deckLayer = new L.DeckGL.Layer({
+const deckLayer = new L.DeckGL({
   views: [
     new deck.MapView({
       repeat: true
