@@ -37,7 +37,7 @@ let map = L.map('map').setView([2.5, 20.0], 3);
 const mapboxToken =
   import.meta.env.VITE_MAPBOX_TOKEN || window?.config?.MAPBOX_TOKEN;
 
-L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=${mapboxToken}', {
+L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=${mapboxToken}`, {
 attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 tileSize: 512,
 zoomOffset: -1,
