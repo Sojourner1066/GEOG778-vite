@@ -1,4 +1,4 @@
-export function updateDeckLayer(map, countryCentroids, selectedCountries, startingPoint) {
+export function updateDeckLayer(map, countryCentroids, selectedCountries, selectedCountryISO3) {
     // Remove existing deck.gl layers
     map.eachLayer(layer => {
         if (layer instanceof DeckGlLeaflet.LeafletLayer) {
@@ -15,10 +15,20 @@ export function updateDeckLayer(map, countryCentroids, selectedCountries, starti
             new deck.ArcLayer({
                 id: 'arcs',
                 data: countryCentroids,
-                dataTransform: d => d.features.filter(f => selectedCountries.includes(f.properties.iso3166_3)),
+                dataTransform: d => {
+                    const startingPointFeature = d.features.find(f => f.properties.iso3166_3 === selectedCountryISO3);
+                    const startingPoint = startingPointFeature ? startingPointFeature.geometry.coordinates : null;
+                    return d.features
+                        .filter(f => selectedCountries.includes(f.properties.iso3166_3))
+                        .map(f => ({
+                            ...f,
+                            sourcePosition: startingPoint,
+                            targetPosition: f.geometry.coordinates
+                        }));
+                },
                 // Styles
-                getSourcePosition: f => startingPoint, 
-                getTargetPosition: f => f.geometry.coordinates,
+                getSourcePosition: f => f.sourcePosition,
+                getTargetPosition: f => f.targetPosition,
                 getSourceColor: [0, 128, 200],
                 getTargetColor: [200, 0, 80],
                 getWidth: 1

@@ -10,6 +10,8 @@ import { fetchWDcountryCentroids } from './wdGetCountryCentroid.js';
 import { wdJSONtoGeoJSON } from './convertWDjsonToGeoJSON.js';
 import { filterGeoJSONByISO3 } from './filterCentroidsByISO.js';
 import { getRandomISO3Codes } from './testLinkedCountry.js';
+import { getCoordinatesByISO3 } from './util.js';
+
 
 
 const defaultStyle = {
@@ -80,6 +82,9 @@ function onEachFeature(feature, layer) {
         const clickedFeature = e.target.feature; // <- Safely get the feature from the layer
         const iso3 = clickedFeature.properties.adm0_a3_us;
         console.log("Selected Country ISO3:", iso3);
+        
+        // get centroid coordinates of the clicked country
+        const startingPoint = getCoordinatesByISO3(iso3);
 
         // Apply selected style
         e.target.setStyle(selectedStyle); // Apply selected style 
@@ -92,8 +97,20 @@ function onEachFeature(feature, layer) {
         const randomCountries = getRandomISO3Codes();
         console.log("Random ISO3 codes:", randomCountries);
         
+        updateDeckLayer(map, countryCentroids, randomCountries, iso3)
+        
         
       }
   });
 }
 
+// Initialize the deck.gl layer with an empty array
+const deckLayer = new DeckGlLeaflet.LeafletLayer({
+  views: [
+      new deck.MapView({
+      repeat: true
+      })
+  ],
+  layers: [],
+  });
+map.addLayer(deckLayer);
