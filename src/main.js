@@ -9,6 +9,7 @@ import 'deck.gl-leaflet'; // extends L with L.DeckGL
 import { fetchWDcountryCentroids } from './wdGetCountryCentroid.js';
 import { wdJSONtoGeoJSON } from './convertWDjsonToGeoJSON.js';
 import { filterGeoJSONByISO3 } from './filterCentroidsByISO.js';
+import { getRandomISO3Codes } from './testLinkedCountry.js';
 
 
 const defaultStyle = {
@@ -75,12 +76,23 @@ function onEachFeature(feature, layer) {
           e.target.setStyle(defaultStyle); // Reset to default style
       },
       click: function (e) {
-          const clickedFeature = e.target.feature; // <- Safely get the feature from the layer
-          const iso3 = clickedFeature.properties.adm0_a3_us;
-          console.log("Selected Country ISO3:", iso3);
-          e.target.setStyle(selectedStyle); // Apply selected style 
-          const primaryCountry = filterGeoJSONByISO3(countryCentroids, iso3);
-          console.log("Primary Country:", primaryCountry);       
+        // Get the iso 3 code from the clicked country
+        const clickedFeature = e.target.feature; // <- Safely get the feature from the layer
+        const iso3 = clickedFeature.properties.adm0_a3_us;
+        console.log("Selected Country ISO3:", iso3);
+
+        // Apply selected style
+        e.target.setStyle(selectedStyle); // Apply selected style 
+
+        // Filter centroids by ISO3 to get the centroid of the clicked country
+        const primaryCountry = filterGeoJSONByISO3(countryCentroids, iso3);
+        console.log("Primary Country:", primaryCountry);
+
+        // Get a array of random countries for testing
+        const randomCountries = getRandomISO3Codes();
+        console.log("Random ISO3 codes:", randomCountries);
+        
+        
       }
   });
 }
