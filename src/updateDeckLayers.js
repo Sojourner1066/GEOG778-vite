@@ -5,6 +5,7 @@ import { Deck } from '@deck.gl/core';
 
 export function updateDeckLayer(map, countryCentroids, selectedCountries, selectedCountryISO3) {
     // Remove existing deck.gl layers
+    console.log(map); // Debug the map object
     map.eachLayer(layer => {
         if (layer._isDeckLayer) {
             map.removeLayer(layer);
