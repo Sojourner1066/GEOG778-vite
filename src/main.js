@@ -54,6 +54,9 @@ const deckOverlay = new Deck({
   layers: []
 });
 
+// tag the overlay as a deck layer so it can be removed later
+deckOverlay._isDeckLayer = true;
+
 
 let countryCentroids = null; // Global cache for centroids
 
