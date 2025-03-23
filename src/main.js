@@ -10,7 +10,7 @@ import { fetchWDcountryCentroids } from './wdGetCountryCentroid.js';
 import { wdJSONtoGeoJSON } from './convertWDjsonToGeoJSON.js';
 import { filterGeoJSONByISO3 } from './filterCentroidsByISO.js';
 import { getRandomISO3Codes } from './testLinkedCountry.js';
-import { getCoordinatesByISO3 } from './util.js';
+import { updateDeckLayer } from './updateDeckLayers.js';
 
 
 
