@@ -72,7 +72,6 @@ let countryCentroids = null;
 fetchWDcountryCentroids()
   .then(data => {
     countryCentroids = wdJSONtoGeoJSON(data);
-    console.log("Fetched centroids once:", countryCentroids);
   })
   .catch(err => console.error("Error fetching centroids:", err));
 
@@ -107,7 +106,6 @@ function onEachFeature(feature, layer) {
 
       // Get an array of random countries for testing
       const randomCountries = getRandomISO3Codes();
-      console.log("Random ISO3 codes:", randomCountries);
 
       // Update the deck.gl layer
       updateDeckLayer(deck, countryCentroids, randomCountries, iso3);
