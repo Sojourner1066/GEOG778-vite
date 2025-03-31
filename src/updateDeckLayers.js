@@ -1,59 +1,37 @@
-// updateDeckLayers.js
-import { MapView } from '@deck.gl/core';
 import { ArcLayer } from '@deck.gl/layers';
-import { Deck } from '@deck.gl/core';
+import { getCoordinatesByISO3 } from './util';
 
 export function updateDeckLayer(deck, countryCentroids, selectedCountries, selectedCountryISO3) {
-    // Create a new ArcLayer
-    // Static data for the ArcLayer
-    const data = [
-      {
-        sourcePosition: [-122.41669, 37.7853], // San Francisco
-        targetPosition: [-74.006, 40.7128]    // New York City
-      },
-      {
-        sourcePosition: [-74.006, 40.7128],   // New York City
-        targetPosition: [2.3522, 48.8566]     // Paris
-      }
-    ];
+  // Get the centerpoint of the clicked country.
+  const sourcePosition = getCoordinatesByISO3(countryCentroids, selectedCountryISO3);
+  if (!sourcePosition) {
+    console.error(`No centerpoint found for clicked country: ${selectedCountryISO3}`);
+    return;
+  }
 
-    // Create the ArcLayer
-    const arcLayer = new ArcLayer({
-      id: 'simple-arcs',
-      data: data,
-      getSourcePosition: d => d.sourcePosition,
-      getTargetPosition: d => d.targetPosition,
-      getSourceColor: [0, 128, 200], // Blue color for source
-      getTargetColor: [200, 0, 80],  // Red color for target
-      getWidth: 2                   // Line width
-    });
+  // Build the data array for the ArcLayer.
+  // For each country in the selectedCountries array, get its centerpoint.
+  const arcData = selectedCountries.map(targetISO3 => {
+    const targetPosition = getCoordinatesByISO3(countryCentroids, targetISO3);
+    return {
+      sourcePosition,
+      targetPosition
+    };
+  }).filter(d => d.targetPosition !== null); // Exclude any countries with no centerpoint.
 
-    // const arcLayer = new ArcLayer({
-    //     id: 'arcs',
-    //     data: countryCentroids,
-    //     dataTransform: d => {
-    //         const startingPointFeature = d.features.find(f => f.properties.iso3166_3 === selectedCountryISO3);
-    //         // const startingPoint = startingPointFeature ? startingPointFeature.geometry.coordinates : null;
-    //         // console.log(startingPoint);
-    //         return d.features
-    //             .filter(f => selectedCountries.includes(f.properties.iso3166_3))
-    //             .map(f => ({
-    //                 ...f,
-    //                 sourcePosition: startingPointFeature.geometry.coordinates,
-    //                 targetPosition: f.geometry.coordinates      
-    //             }));
-    //         console.log("Transformed Data for ArcLayer:", transformedData);
-    //     },
-    //     // Styles
-    //     getSourcePosition: f => f.sourcePosition,
-    //     getTargetPosition: f => f.targetPosition,
-    //     getSourceColor: [0, 128, 200],
-    //     getTargetColor: [200, 0, 80],
-    //     getWidth: 1
-    // });
+  // Create a new ArcLayer that connects the clicked country's centerpoint to each target country's centerpoint.
+  const arcLayer = new ArcLayer({
+    id: 'country-arcs',
+    data: arcData,
+    getSourcePosition: d => d.sourcePosition,
+    getTargetPosition: d => d.targetPosition,
+    getSourceColor: [0, 128, 200],  // Blue for source
+    getTargetColor: [200, 0, 80],   // Red for target
+    getWidth: 2                   // Line width
+  });
 
-    // Update the Deck instance with the new layer
-    deck.setProps({
-        layers: [arcLayer] // Replace any existing layers with the new ArcLayer
-    });
+  // Update the deck instance to remove any existing arc layers and set the new one.
+  deck.setProps({
+    layers: [arcLayer]
+  });
 }

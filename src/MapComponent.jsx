@@ -114,8 +114,8 @@ const MapComponent = () => {
           e.target.setStyle(selectedStyle);
 
           // Get random ISO3 codes for testing and update the deck.gl layer
-          const randomCountries = getRandomISO3Codes();
-          updateDeckLayer(deck, countryCentroidsRef.current, randomCountries, iso3);
+          const targetCountries =  getRandomISO3Codes();
+          updateDeckLayer(deck, countryCentroids, targetCountries, iso3);
         }
       });
     }
